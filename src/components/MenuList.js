@@ -111,17 +111,25 @@ function MenuList() {
   };
 
   const removeFromOrder = (itemId) => {
-    const updatedOrderItems = orderItems.map(item => 
-      item.id === itemId && item.quantity > 1 
-        ? { ...item, quantity: item.quantity - 1 }
-        : item
-    ).filter(item => !(item.id === itemId && item.quantity === 1));
-    
+    const updatedOrderItems = orderItems
+      .map(item => {
+        if (item.id === itemId) {
+          if (item.quantity > 1) {
+            return { ...item, quantity: item.quantity - 1 };
+          } else {
+            return null; 
+          }
+        }
+        return item;
+      })
+      .filter(item => item !== null); 
     setOrderItems(updatedOrderItems);
+  
     if (updatedOrderItems.length === 0) {
       setIsOrderVisible(false);
     }
   };
+  
 
   const getOrderItemCount = () => {
     return orderItems.reduce((total, item) => total + item.quantity, 0);
